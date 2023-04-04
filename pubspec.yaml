@@ -1,5 +1,5 @@
-name: squiggly_seekbar
-description: A new Flutter package project.
+name: squiggly_slider
+description: Flutter Package to add the Squiggly Seekbar (introduced in Android 13 for the Media Player) as a Widget 
 version: 0.0.1
 homepage:
 
