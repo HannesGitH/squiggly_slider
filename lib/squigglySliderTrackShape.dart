@@ -140,8 +140,9 @@ class SquigglySliderTrackShape extends SliderTrackShape
         ..relativeLineTo(-squigglePhaseFactor * squiggleWavelength, 0);
 
       final int squiggleCount = squiggleWavelength != 0
-          ? (lr - ll - squigglePhaseFactor * squiggleWavelength).ceil() ~/
-              squiggleWavelength
+          ? ((lr - ll - squigglePhaseFactor * squiggleWavelength).ceil() ~/
+                  squiggleWavelength) -
+              1
           : 0;
       for (int i = 0; i < squiggleCount; i++) {
         path.relativeQuadraticBezierTo(
@@ -157,14 +158,36 @@ class SquigglySliderTrackShape extends SliderTrackShape
           0,
         );
       }
-      // path.quadraticBezierTo(
-      //   ll + squiggleWavelength / 4,
-      //   heightCenter + squiggleAmplitude,
-      //   ll,
-      //   heightCenter,
-      // );
-      //TODO: better phase out (draw beziwer to spline with less amp and to ll) (similar for start above)
-      path.lineTo(ll, heightCenter);
+      //better phase out (draw bezier to spline with less amp and to ll) (similar for start above)
+      double remainingLength =
+          (lr - ll - squigglePhaseFactor * squiggleWavelength) -
+              squiggleCount * squiggleWavelength;
+      double remainingAmplitude =
+          remainingLength / squiggleWavelength * squiggleAmplitude;
+      if (remainingLength > squiggleWavelength / 2) {
+        path.relativeQuadraticBezierTo(
+          -squiggleWavelength / 4,
+          squiggleAmplitude,
+          -squiggleWavelength / 2,
+          0,
+        );
+        path.relativeQuadraticBezierTo(
+          -remainingAmplitude / squiggleAmplitude * remainingLength / 4,
+          -remainingAmplitude,
+          -remainingLength,
+          0,
+        );
+      } else {
+        remainingLength -= squiggleWavelength / 2;
+        path.relativeQuadraticBezierTo(
+          remainingAmplitude / squiggleAmplitude * remainingLength / 4,
+          -remainingAmplitude,
+          -remainingLength,
+          0,
+        );
+      }
+
+      // path.lineTo(ll, heightCenter);
       context.canvas.drawPath(
         path,
         leftTrackPaint
