@@ -14,6 +14,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter/services.dart';
 
+import 'squigglySliderTrackShape.dart';
+
 // Examples can assume:
 // int _dollars = 0;
 // int _duelCommandment = 1;
@@ -111,7 +113,7 @@ typedef PaintValueIndicator = void Function(
 ///  * <https://material.io/design/components/sliders.html>
 ///  * [MediaQuery], from which the text scale factor is obtained.
 class SquigglySlider extends Slider {
-  /// Creates a Material Design slider.
+  /// Creates a squiggly Material Design slider.
   ///
   /// The slider itself does not maintain any state. Instead, when the state of
   /// the slider changes, the widget calls the [onChanged] callback. Most
@@ -163,30 +165,63 @@ class SquigglySlider extends Slider {
   State<SquigglySlider> createState() => _SquigglySliderState();
 }
 
-class _SquigglySliderState extends State<SquigglySlider> {
+class _SquigglySliderState extends State<SquigglySlider>
+    with SingleTickerProviderStateMixin {
+  late AnimationController phaseController;
+
   @override
-  Widget build(BuildContext context) {
-    SliderThemeData sliderTheme = SliderTheme.of(context)..copyWith();
-    return Slider(
-      key: widget.key,
-      value: widget.value,
-      secondaryTrackValue: widget.secondaryTrackValue,
-      onChanged: widget.onChanged,
-      onChangeStart: widget.onChangeStart,
-      onChangeEnd: widget.onChangeEnd,
-      min: widget.min,
-      max: widget.max,
-      divisions: widget.divisions,
-      label: widget.label,
-      activeColor: widget.activeColor,
-      inactiveColor: widget.inactiveColor,
-      secondaryActiveColor: widget.secondaryActiveColor,
-      thumbColor: widget.thumbColor,
-      overlayColor: widget.overlayColor,
-      mouseCursor: widget.mouseCursor,
-      semanticFormatterCallback: widget.semanticFormatterCallback,
-      focusNode: widget.focusNode,
-      autofocus: widget.autofocus,
-    );
+  void initState() {
+    super.initState();
+    if (widget.squiggleSpeed == 0) {
+      phaseController = AnimationController(
+        vsync: this,
+      );
+      phaseController.value = 0;
+    } else {
+      phaseController = AnimationController(
+        duration:
+            Duration(milliseconds: (1000.0 / widget.squiggleSpeed).round()),
+        vsync: this,
+      )
+        ..repeat(min: 0, max: 1)
+        ..addListener(() {
+          setState(() {
+            // The state that has changed here is the animation object’s value.
+          });
+        });
+      ;
+    }
   }
+
+  @override
+  Widget build(BuildContext context) => SliderTheme(
+        data: SliderTheme.of(context).copyWith(
+          trackShape: SquigglySliderTrackShape(
+            squiggleAmplitude: widget.squiggleAmplitude,
+            squiggleWavelength: widget.squiggleWavelength,
+            squigglePhaseFactor: phaseController.value,
+          ),
+        ),
+        child: Slider(
+          key: widget.key,
+          value: widget.value,
+          secondaryTrackValue: widget.secondaryTrackValue,
+          onChanged: widget.onChanged,
+          onChangeStart: widget.onChangeStart,
+          onChangeEnd: widget.onChangeEnd,
+          min: widget.min,
+          max: widget.max,
+          divisions: widget.divisions,
+          label: widget.label,
+          activeColor: widget.activeColor,
+          inactiveColor: widget.inactiveColor,
+          secondaryActiveColor: widget.secondaryActiveColor,
+          thumbColor: widget.thumbColor,
+          overlayColor: widget.overlayColor,
+          mouseCursor: widget.mouseCursor,
+          semanticFormatterCallback: widget.semanticFormatterCallback,
+          focusNode: widget.focusNode,
+          autofocus: widget.autofocus,
+        ),
+      );
 }

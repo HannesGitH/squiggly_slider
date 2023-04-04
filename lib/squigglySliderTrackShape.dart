@@ -26,10 +26,18 @@ import 'package:flutter/material.dart';
 ///  * [SliderTrackShape], which can be used to create custom shapes for the
 ///    [Slider]'s track.
 ///  * [RectangularSliderTrackShape], for a similar track with sharp edges.
-class RoundedRectSliderTrackShape extends SliderTrackShape
+class SquigglySliderTrackShape extends SliderTrackShape
     with BaseSliderTrackShape {
   /// Create a slider track that draws two rectangles with rounded outer edges.
-  const RoundedRectSliderTrackShape();
+  const SquigglySliderTrackShape({
+    this.squiggleAmplitude = 0.0,
+    this.squiggleWavelength = 0.0,
+    this.squigglePhaseFactor = 1.0,
+  });
+
+  final double squiggleAmplitude;
+  final double squiggleWavelength;
+  final double squigglePhaseFactor;
 
   @override
   void paint(
@@ -100,25 +108,72 @@ class RoundedRectSliderTrackShape extends SliderTrackShape
     final Radius activeTrackRadius =
         Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);
 
-    context.canvas.drawRRect(
-      RRect.fromLTRBAndCorners(
-        trackRect.left,
-        (textDirection == TextDirection.ltr)
-            ? trackRect.top - (additionalActiveTrackHeight / 2)
-            : trackRect.top,
-        thumbCenter.dx,
-        (textDirection == TextDirection.ltr)
-            ? trackRect.bottom + (additionalActiveTrackHeight / 2)
-            : trackRect.bottom,
-        topLeft: (textDirection == TextDirection.ltr)
-            ? activeTrackRadius
-            : trackRadius,
-        bottomLeft: (textDirection == TextDirection.ltr)
-            ? activeTrackRadius
-            : trackRadius,
-      ),
-      leftTrackPaint,
-    );
+    final ll = trackRect.left;
+    final lt = (textDirection == TextDirection.ltr)
+        ? trackRect.top - (additionalActiveTrackHeight / 2)
+        : trackRect.top;
+    final lr = thumbCenter.dx;
+    final lb = (textDirection == TextDirection.ltr)
+        ? trackRect.bottom + (additionalActiveTrackHeight / 2)
+        : trackRect.bottom;
+
+    if (squiggleAmplitude == 0) {
+      context.canvas.drawRRect(
+        RRect.fromLTRBAndCorners(
+          ll,
+          lt,
+          lr,
+          lb,
+          topLeft: (textDirection == TextDirection.ltr)
+              ? activeTrackRadius
+              : trackRadius,
+          bottomLeft: (textDirection == TextDirection.ltr)
+              ? activeTrackRadius
+              : trackRadius,
+        ),
+        leftTrackPaint,
+      );
+    } else {
+      final double heightCenter = (lt + lb) / 2;
+      Path path = Path()
+        ..moveTo(lr, heightCenter)
+        ..relativeLineTo(-squigglePhaseFactor * squiggleWavelength, 0);
+
+      final int squiggleCount = squiggleWavelength != 0
+          ? (lr - ll - squigglePhaseFactor * squiggleWavelength).ceil() ~/
+              squiggleWavelength
+          : 0;
+      for (int i = 0; i < squiggleCount; i++) {
+        path.relativeQuadraticBezierTo(
+          -squiggleWavelength / 4,
+          squiggleAmplitude,
+          -squiggleWavelength / 2,
+          0,
+        );
+        path.relativeQuadraticBezierTo(
+          -squiggleWavelength / 4,
+          -squiggleAmplitude,
+          -squiggleWavelength / 2,
+          0,
+        );
+      }
+      // path.quadraticBezierTo(
+      //   ll + squiggleWavelength / 4,
+      //   heightCenter + squiggleAmplitude,
+      //   ll,
+      //   heightCenter,
+      // );
+      //TODO: better phase out (draw beziwer to spline with less amp and to ll) (similar for start above)
+      path.lineTo(ll, heightCenter);
+      context.canvas.drawPath(
+        path,
+        leftTrackPaint
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = (lt - lb).abs()
+          ..strokeCap = StrokeCap.round,
+      );
+    }
+
     context.canvas.drawRRect(
       RRect.fromLTRBAndCorners(
         thumbCenter.dx,
