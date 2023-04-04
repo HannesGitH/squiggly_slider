@@ -150,9 +150,14 @@ class SquigglySlider extends Slider {
     super.semanticFormatterCallback,
     super.focusNode,
     super.autofocus = false,
+    this.squiggleAmplitude = 0.0,
+    this.squiggleWavelength = 0.0,
+    this.squiggleSpeed = 1.0,
   });
 
-  final double squiggleAmplitude = 0.0;
+  final double squiggleAmplitude;
+  final double squiggleWavelength;
+  final double squiggleSpeed;
 
   @override
   State<SquigglySlider> createState() => _SquigglySliderState();
@@ -176,6 +181,8 @@ class _SquigglySliderState extends State<SquigglySlider>
   // and the next on a discrete slider.
   late AnimationController positionController;
   Timer? interactionTimer;
+
+  late AnimationController squigglePhaseFactorController;
 
   final GlobalKey _renderObjectKey = GlobalKey();
 
@@ -227,6 +234,11 @@ class _SquigglySliderState extends State<SquigglySlider>
       duration: Duration.zero,
       vsync: this,
     );
+    squigglePhaseFactorController = AnimationController(
+      duration: Duration(milliseconds: (1000 / widget.squiggleSpeed).round()),
+      vsync: this,
+    );
+    squigglePhaseFactorController.repeat(min: 0, max: 1);
     enableController.value = widget.onChanged != null ? 1.0 : 0.0;
     positionController.value = _convert(widget.value);
     _actionMap = <Type, Action<Intent>>{
@@ -532,7 +544,7 @@ class _SquigglySliderState extends State<SquigglySlider>
         mouseCursor: effectiveMouseCursor,
         child: CompositedTransformTarget(
           link: _layerLink,
-          child: _SliderRenderObjectWidget(
+          child: _SquigglySliderRenderObjectWidget(
             key: _renderObjectKey,
             value: _convert(widget.value),
             secondaryTrackValue: (widget.secondaryTrackValue != null)
@@ -552,6 +564,9 @@ class _SquigglySliderState extends State<SquigglySlider>
             semanticFormatterCallback: widget.semanticFormatterCallback,
             hasFocus: _focused,
             hovering: _hovering,
+            amplitude: widget.squiggleAmplitude,
+            frequency: widget.squiggleWavelength,
+            phaseFactor: squigglePhaseFactorController.value,
           ),
         ),
       ),
@@ -579,8 +594,8 @@ class _SquigglySliderState extends State<SquigglySlider>
   }
 }
 
-class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
-  const _SliderRenderObjectWidget({
+class _SquigglySliderRenderObjectWidget extends LeafRenderObjectWidget {
+  const _SquigglySliderRenderObjectWidget({
     super.key,
     required this.value,
     required this.secondaryTrackValue,
@@ -596,6 +611,9 @@ class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
     required this.semanticFormatterCallback,
     required this.hasFocus,
     required this.hovering,
+    required this.amplitude,
+    required this.frequency,
+    required this.phaseFactor,
   });
 
   final double value;
@@ -612,6 +630,9 @@ class _SliderRenderObjectWidget extends LeafRenderObjectWidget {
   final _SquigglySliderState state;
   final bool hasFocus;
   final bool hovering;
+  final double amplitude;
+  final double frequency;
+  final double phaseFactor;
 
   @override
   _RenderSlider createRenderObject(BuildContext context) {
@@ -1261,6 +1282,7 @@ class _RenderSlider extends RenderBox with RelayoutWhenSystemFontsChangeMixin {
             trackRect.center.dy)
         : null;
 
+    //TODO: paint squiggly track?
     _sliderTheme.trackShape!.paint(
       context,
       offset,
