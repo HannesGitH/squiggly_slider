@@ -1,3 +1,7 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+* initial release
+* squiggly slider widget `SquigglySlider`
+* same API as `Slider` with 3 added parameters to control squigglyness
+* only lhs of track can be squiggly in current version
+* docstrings not yet modified

@@ -1,34 +1,9 @@
 library slider;
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
-import 'dart:async';
-import 'dart:math' as math;
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart' show timeDilation;
-import 'package:flutter/services.dart';
+import 'squiggly_slider_track_shape.dart';
 
-import 'squigglySliderTrackShape.dart';
-
-// Examples can assume:
-// int _dollars = 0;
-// int _duelCommandment = 1;
-// void setState(VoidCallback fn) { }
-
-/// [SquigglySlider] uses this callback to paint the value indicator on the overlay.
-///
-/// Since the value indicator is painted on the Overlay; this method paints the
-/// value indicator in a [RenderBox] that appears in the [Overlay].
-typedef PaintValueIndicator = void Function(
-    PaintingContext context, Offset offset);
-
-/// A Material Design slider.
+/// A Material Design squiggly slider.
 ///
 /// Used to select from a range of values.
 ///
@@ -189,7 +164,6 @@ class _SquigglySliderState extends State<SquigglySlider>
             // The state that has changed here is the animation object’s value.
           });
         });
-      ;
     }
   }
 

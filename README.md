@@ -26,7 +26,7 @@ or manually add the dependency to your `pubspec.yaml` file.
 
 ```yaml
 dependencies:
-  squiggly_slider: ^0.0.1
+  squiggly_slider: ^1.0.0
 ```
 
 ## Usage
