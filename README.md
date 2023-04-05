@@ -17,7 +17,7 @@ and the Flutter guide for
 
 Flutter rebuild of the Squiggly Seekbar introduced in Android 13 for the Media Player.
 
-![Squiggly Seekbar Sample](./assets/sample.mov)
+![Squiggly Seekbar Sample](./assets/sample.gif)
 
 ## Getting started
 
