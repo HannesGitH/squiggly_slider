@@ -179,8 +179,8 @@ class _SquigglySliderState extends State<SquigglySlider>
       phaseController.value = 0;
     } else {
       phaseController = AnimationController(
-        duration:
-            Duration(milliseconds: (1000.0 / widget.squiggleSpeed).round()),
+        duration: Duration(
+            milliseconds: (1000.0 / widget.squiggleSpeed.abs()).round()),
         vsync: this,
       )
         ..repeat(min: 0, max: 1)
@@ -199,7 +199,9 @@ class _SquigglySliderState extends State<SquigglySlider>
           trackShape: SquigglySliderTrackShape(
             squiggleAmplitude: widget.squiggleAmplitude,
             squiggleWavelength: widget.squiggleWavelength,
-            squigglePhaseFactor: phaseController.value,
+            squigglePhaseFactor: widget.squiggleSpeed < 0
+                ? 1 - phaseController.value
+                : phaseController.value,
           ),
         ),
         child: Slider(
