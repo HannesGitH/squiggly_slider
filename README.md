@@ -15,24 +15,39 @@ and the Flutter guide for
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Flutter rebuild of the Squiggly Seekbar introduced in Android 13 for the Media Player.
+
+![Squiggly Seekbar Sample](./assets/sample.mov)
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+`flutter pub add squiggly_slider`
+or manually add the dependency to your `pubspec.yaml` file.
+
+```yaml
+dependencies:
+  squiggly_slider: ^0.0.1
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+import the package
 
 ```dart
-const like = 'sample';
+import 'package:squiggly_slider/squiggly_slider.dart';
+```
+
+and then use it as a drop in replacement for the normal slider
+
+```dart
+SquigglySlider(
+    //... normal Slider Widget properties ...
+    squiggleAmplitude: 5.0,
+    squiggleWavelength: 5.0,
+    squiggleSpeed: 0.3,
+),
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+contributions (PRs) are welcome.
