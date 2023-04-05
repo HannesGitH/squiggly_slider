@@ -176,7 +176,7 @@ class _SquigglySliderState extends State<SquigglySlider>
       phaseController = AnimationController(
         vsync: this,
       );
-      phaseController.value = 0;
+      phaseController.value = 0.5;
     } else {
       phaseController = AnimationController(
         duration: Duration(

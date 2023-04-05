@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -137,95 +138,51 @@ class SquigglySliderTrackShape extends SliderTrackShape
       );
     } else {
       //TODO: fixme
+      final phase = squiggleWavelength * squigglePhaseFactor;
       final double heightCenter = (lt + lb) / 2;
-      const nonfitcount = 1;
-      final double offset = squigglePhaseFactor * squiggleWavelength;
-      final int squiggleCount = squiggleWavelength != 0
-          ? ((lr - ll - offset).ceil() ~/ squiggleWavelength) - nonfitcount
-          : 0;
+      // final int controlPointCount = ((lr - ll) / squiggleWavelength * 4).ceil();
+      // final controlPoints = List.generate(
+      //   controlPointCount,
+      //   (index) => Offset(
+      //       ll + index * squiggleWavelength / 4,
+      //       heightCenter +
+      //           squiggleAmplitude *
+      //               (index % 2 == 0
+      //                   ? 0
+      //                   : index % 4 == 1
+      //                       ? 1
+      //                       : -1)),
+      // ).toList();
 
-      final double untilPhase = 1 - squigglePhaseFactor;
-      Path path = Path()..moveTo(lr, heightCenter)
-          // ..relativeLineTo(-offset, 0)
-          // ..relativeLineTo(-squiggleWavelength / 2, 0)
-          // ..relativeCubicTo(
-          //   -lerpDouble(0, squiggleWavelength / 4, squigglePhaseFactor)!,
-          //   -lerpDouble(0, squiggleAmplitude, squigglePhaseFactor)!,
-          //   -lerpDouble(squiggleWavelength / 2, squiggleWavelength / 4,
-          //       squigglePhaseFactor)!,
-          //   -lerpDouble(0, squiggleAmplitude, squigglePhaseFactor)!,
-          //   -squiggleWavelength / 2,
-          //   0,
-          // )
-          ;
-
-      bool upper = true;
-      if (offset >= squiggleWavelength / 2) {
-        upper = false;
-      }
-
-      final double sizefac = squigglePhaseFactor / 2;
-      path.relativeCubicTo(
-        -(offset +
-            nonfitcount * squiggleWavelength -
-            (upper ? 0 : squiggleWavelength / 2)),
-        0,
-        -(offset +
-            squiggleWavelength / 4 * 3 * sizefac -
-            (upper ? 0 : squiggleWavelength / 2)),
-        (upper ? 1 : -1) * (squiggleAmplitude * sizefac),
-        -(offset - (upper ? 0 : squiggleWavelength / 2)),
-        0,
-      );
-
-      if (upper) {
-        path.relativeQuadraticBezierTo(
-          -squiggleWavelength / 4,
-          -squiggleAmplitude,
-          -squiggleWavelength / 2,
-          0,
-        );
-      }
-      for (int i = /*nonfitcount*/ 0; i < squiggleCount; i++) {
-        path.relativeQuadraticBezierTo(
-          -squiggleWavelength / 4,
-          squiggleAmplitude,
-          -squiggleWavelength / 2,
-          0,
-        );
-        path.relativeQuadraticBezierTo(
-          -squiggleWavelength / 4,
-          -squiggleAmplitude,
-          -squiggleWavelength / 2,
-          0,
-        );
-      }
-      //better phase out (draw bezier to spline with less amp and to ll) (similar for start above)
-      double remainingSpace = path.getBounds().left - ll;
-      upper = true;
-      if (remainingSpace >= squiggleWavelength / 2 * (nonfitcount * 2 + 1)) {
-        path.relativeQuadraticBezierTo(
-          -squiggleWavelength / 4,
-          squiggleAmplitude,
-          -squiggleWavelength / 2,
-          0,
-        );
-        remainingSpace -= squiggleWavelength / 2;
-        upper = false;
-      }
-
-      double sizefactor = remainingSpace / squiggleWavelength - (1 / 2);
-      path.relativeCubicTo(
-        -squiggleWavelength / 4 * sizefactor,
-        (upper ? 1 : -1) * (squiggleAmplitude * sizefactor),
-        -squiggleWavelength / 2 * sizefactor,
-        0,
-        -remainingSpace,
-        0,
-      );
-      // path.lineTo(ll, heightCenter);
-      context.canvas.drawPath(
-        path,
+      const ppp = 1.0;
+      context.canvas.drawPoints(
+        PointMode.polygon,
+        // CatmullRomSpline(
+        //   tension: 0.0,
+        //   controlPoints,
+        //   startHandle: Offset(ll - 10, heightCenter),
+        //   endHandle: Offset(lr + 10, heightCenter),
+        // ).generateSamples().map((e) => e.value).toList(),
+        List.generate(
+          ((lr - ll) / ppp).ceil(),
+          (index) {
+            final double xOff = index * ppp;
+            final double x = ll + xOff;
+            final double easeLength = squiggleWavelength * 3;
+            final double easeFactor = (xOff < easeLength
+                ? xOff / easeLength
+                : xOff > lr - ll - easeLength
+                    ? (lr - ll - xOff) / easeLength
+                    : 1);
+            return Offset(
+              x,
+              heightCenter +
+                  (sin(x / squiggleWavelength + phase * 2 * pi) *
+                          squiggleAmplitude) *
+                      easeFactor,
+            );
+          },
+        ),
         leftTrackPaint
           ..style = PaintingStyle.stroke
           ..strokeWidth = (lt - lb).abs()
