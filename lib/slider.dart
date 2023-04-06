@@ -3,92 +3,28 @@ library slider;
 import 'package:flutter/material.dart';
 import 'squiggly_slider_track_shape.dart';
 
-/// A Material Design squiggly slider.
+/// A Material Design Squiggly [Slider].
 ///
-/// Used to select from a range of values.
+/// Used to select from a range of values while signaling something is live.
 ///
-/// {@youtube 560 315 https://www.youtube.com/watch?v=ufb4gIPDmEs}
+/// ![A squiggly slider widget, squiggly slider track shape.](https://github.com/hannesgith/squiggly_slider/raw/main/assets/sample.gif)
 ///
-/// {@tool dartpad}
-/// ![A legacy slider widget, consisting of 5 divisions and showing the default value
-/// indicator.](https://flutter.github.io/assets-for-api-docs/assets/material/slider.png)
-///
-/// The Sliders value is part of the Stateful widget subclass to change the value
+/// The Squiggly Sliders value is part of the Stateful widget subclass to change the value
 /// setState was called.
+/// The squiggly sinus curve can be controlled by the [squiggleAmplitude] and [squiggleWavelength] parameters.
+/// The [squiggleSpeed] parameter controls the speed of the animation.
 ///
-/// ** See code in examples/api/lib/material/slider/slider.0.dart **
-/// {@end-tool}
-///
-/// {@tool dartpad}
-/// This sample shows the creation of a [SquigglySlider] using [ThemeData.useMaterial3] flag,
-/// as described in: https://m3.material.io/components/sliders/overview.
-///
-/// ** See code in examples/api/lib/material/slider/slider.1.dart **
-/// {@end-tool}
-///
-/// {@tool dartpad}
-/// This example shows a [SquigglySlider] widget using the [SquigglySlider.secondaryTrackValue]
-/// to show a secondary track in the slider.
-///
-/// ** See code in examples/api/lib/material/slider/slider.2.dart **
-/// {@end-tool}
-///
-/// A slider can be used to select from either a continuous or a discrete set of
-/// values. The default is to use a continuous range of values from [min] to
-/// [max]. To use discrete values, use a non-null value for [divisions], which
-/// indicates the number of discrete intervals. For example, if [min] is 0.0 and
-/// [max] is 50.0 and [divisions] is 5, then the slider can take on the
-/// discrete values 0.0, 10.0, 20.0, 30.0, 40.0, and 50.0.
-///
-/// The terms for the parts of a slider are:
-///
-///  * The "thumb", which is a shape that slides horizontally when the user
-///    drags it.
-///  * The "track", which is the line that the slider thumb slides along.
-///  * The "value indicator", which is a shape that pops up when the user
-///    is dragging the thumb to indicate the value being selected.
-///  * The "active" side of the slider is the side between the thumb and the
-///    minimum value.
-///  * The "inactive" side of the slider is the side between the thumb and the
-///    maximum value.
-///
-/// The slider will be disabled if [onChanged] is null or if the range given by
-/// [min]..[max] is empty (i.e. if [min] is equal to [max]).
-///
-/// The slider widget itself does not maintain any state. Instead, when the state
-/// of the slider changes, the widget calls the [onChanged] callback. Most
-/// widgets that use a slider will listen for the [onChanged] callback and
-/// rebuild the slider with a new [value] to update the visual appearance of the
-/// slider. To know when the value starts to change, or when it is done
-/// changing, set the optional callbacks [onChangeStart] and/or [onChangeEnd].
-///
-/// By default, a slider will be as wide as possible, centered vertically. When
-/// given unbounded constraints, it will attempt to make the track 144 pixels
-/// wide (with margins on each side) and will shrink-wrap vertically.
-///
-/// Requires one of its ancestors to be a [Material] widget.
-///
-/// Requires one of its ancestors to be a [MediaQuery] widget. Typically, these
-/// are introduced by the [MaterialApp] or [WidgetsApp] widget at the top of
-/// your application widget tree.
-///
-/// To determine how it should be displayed (e.g. colors, thumb shape, etc.),
-/// a slider uses the [SliderThemeData] available from either a [SliderTheme]
-/// widget or the [ThemeData.sliderTheme] a [Theme] widget above it in the
-/// widget tree. You can also override some of the colors with the [activeColor]
-/// and [inactiveColor] properties, although more fine-grained control of the
-/// look is achieved using a [SliderThemeData].
+/// ** See code in examples/lib/main.dart **
 ///
 /// See also:
 ///
-///  * [SliderTheme] and [SliderThemeData] for information about controlling
-///    the visual appearance of the slider.
-///  * [Radio], for selecting among a set of explicit values.
-///  * [Checkbox] and [Switch], for toggling a particular value on or off.
-///  * <https://material.io/design/components/sliders.html>
-///  * [MediaQuery], from which the text scale factor is obtained.
+///  * [Slider] for more information about the component parts of a slider.
 class SquigglySlider extends Slider {
   /// Creates a squiggly Material Design slider.
+  ///
+  /// The squiggle itself is a sinus curve with rounded edges, vertically centered
+  /// its amplitude and wavelength can be adjusted by [squiggleAmplitude] and [squiggleWavelength] respectively,
+  /// the curve itself is animated, and the animation speed can be adjusted with [squiggleSpeed] which controls how many waves pass from left to right in one second.
   ///
   /// The slider itself does not maintain any state. Instead, when the state of
   /// the slider changes, the widget calls the [onChanged] callback. Most
@@ -107,6 +43,40 @@ class SquigglySlider extends Slider {
   /// You can override some of the colors with the [activeColor] and
   /// [inactiveColor] properties, although more fine-grained control of the
   /// appearance is achieved using a [SliderThemeData].
+  ///
+  /// A slider can be used to select from either a continuous or a discrete set of
+  /// values. The default is to use a continuous range of values from [min] to
+  /// [max]. To use discrete values, use a non-null value for [divisions], which
+  /// indicates the number of discrete intervals. For example, if [min] is 0.0 and
+  /// [max] is 50.0 and [divisions] is 5, then the slider can take on the
+  /// discrete values 0.0, 10.0, 20.0, 30.0, 40.0, and 50.0.
+  ///
+  /// The terms for the parts of a slider are:
+  ///
+  ///  * The "thumb", which is a shape that slides horizontally when the user
+  ///    drags it.
+  ///  * The "track", which is the line that the slider thumb slides along.
+  ///  * The "value indicator", which is a shape that pops up when the user
+  ///    is dragging the thumb to indicate the value being selected.
+  ///  * The "active" side of the slider is the side between the thumb and the
+  ///    minimum value.
+  ///  * The "inactive" side of the slider is the side between the thumb and the
+  ///    maximum value.
+  ///
+  /// The slider will be disabled if [onChanged] is null or if the range given by
+  /// [min]..[max] is empty (i.e. if [min] is equal to [max]).
+  ///
+  /// The slider widget itself does not maintain any state. Instead, when the state
+  /// of the slider changes, the widget calls the [onChanged] callback. Most
+  /// widgets that use a slider will listen for the [onChanged] callback and
+  /// rebuild the slider with a new [value] to update the visual appearance of the
+  /// slider. To know when the value starts to change, or when it is done
+  /// changing, set the optional callbacks [onChangeStart] and/or [onChangeEnd].
+  ///
+  /// By default, a slider will be as wide as possible, centered vertically. When
+  /// given unbounded constraints, it will attempt to make the track 144 pixels
+  /// wide (with margins on each side) and will shrink-wrap vertically.
+  ///
   const SquigglySlider({
     super.key,
     required super.value,
@@ -132,8 +102,13 @@ class SquigglySlider extends Slider {
     this.squiggleSpeed = 1.0,
   });
 
+  /// The amplitude of the squiggle.
   final double squiggleAmplitude;
+
+  /// The wavelength of the squiggle.
   final double squiggleWavelength;
+
+  /// The speed of the squiggle in waves per second.
   final double squiggleSpeed;
 
   @override

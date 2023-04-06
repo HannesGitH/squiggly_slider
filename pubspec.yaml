@@ -3,6 +3,7 @@ description: Flutter Package to add the Squiggly Seekbar (introduced in Android 
 version: 1.0.0
 homepage: "https://github.com/hannesgith/squiggly_slider"
 repository: "https://github.com/hannesgith/squiggly_slider"
+issue_tracker: "https://github.com/hannesgith/squiggly_slider/issues"
 
 environment:
   sdk: '>=2.19.2 <3.0.0'

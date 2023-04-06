@@ -3,32 +3,34 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// The default shape of a [Slider]'s track.
+/// A squiggly Variant of the default [Slider] track.
+/// Similar to that in the Android 13 Media Control.
+/// Track for the [SquigglySlider] introduced with this package.
 ///
-/// It paints a solid colored rectangle with rounded edges, vertically centered
-/// in the `parentBox`. The track rectangle extends to the bounds of the
-/// `parentBox`, but is padded by the larger of [RoundSliderOverlayShape]'s
-/// radius and [RoundSliderThumbShape]'s radius. The height is defined by the
-/// [SliderThemeData.trackHeight]. The color is determined by the [Slider]'s
-/// enabled state and the track segment's active state which are defined by:
+/// It paints a moving sinus-curve with rounded edges, vertically centered
+/// in the `parentBox`.
+/// The amplitude and wavelength of the curve can be adjusted
+/// by [squiggleAmplitude] and [squiggleWavelength] respectively,
+/// while the current phase shift (as a factor of the wavelength) can be adjusted with [squigglePhaseFactor], this will be animated by the [SquigglySlider].
+/// The thickness is defined by the [SliderThemeData.trackHeight].
+/// The color is determined by the [Slider]'s enabled state
+/// and the track segment's active state which are defined by:
 ///   [SliderThemeData.activeTrackColor],
 ///   [SliderThemeData.inactiveTrackColor],
 ///   [SliderThemeData.disabledActiveTrackColor],
 ///   [SliderThemeData.disabledInactiveTrackColor].
 ///
-/// {@macro flutter.material.SliderTrackShape.paint.trackSegment}
 ///
-/// ![A slider widget, consisting of 5 divisions and showing the rounded rect slider track shape.]
-/// (https://flutter.github.io/assets-for-api-docs/assets/material/rounded_rect_slider_track_shape.png)
+/// ![A squiggly slider widget, squiggly slider track shape.](https://github.com/hannesgith/squiggly_slider/raw/main/assets/sample.gif)
 ///
 /// See also:
 ///
-///  * [Slider], for the component that is meant to display this shape.
+///  * [SquigglySlider], for the component that is meant to display this shape.
 ///  * [SliderThemeData], where an instance of this class is set to inform the
 ///    slider of the visual details of the its track.
 ///  * [SliderTrackShape], which can be used to create custom shapes for the
 ///    [Slider]'s track.
-///  * [RectangularSliderTrackShape], for a similar track with sharp edges.
+///  * [RoundedRectSliderTrackShape], for a similar track (the default for the normal [Slider]).
 class SquigglySliderTrackShape extends SliderTrackShape
     with BaseSliderTrackShape {
   /// Create a slider track that draws two rectangles with rounded outer edges.
@@ -130,32 +132,12 @@ class SquigglySliderTrackShape extends SliderTrackShape
         leftTrackPaint,
       );
     } else {
-      //TODO: fixme
       final phase = squiggleWavelength * squigglePhaseFactor;
       final double heightCenter = (lt + lb) / 2;
-      // final int controlPointCount = ((lr - ll) / squiggleWavelength * 4).ceil();
-      // final controlPoints = List.generate(
-      //   controlPointCount,
-      //   (index) => Offset(
-      //       ll + index * squiggleWavelength / 4,
-      //       heightCenter +
-      //           squiggleAmplitude *
-      //               (index % 2 == 0
-      //                   ? 0
-      //                   : index % 4 == 1
-      //                       ? 1
-      //                       : -1)),
-      // ).toList();
 
-      const ppp = 1.0;
+      const ppp = 1.0; // pixels per point -- the resolution of the curve
       context.canvas.drawPoints(
         PointMode.polygon,
-        // CatmullRomSpline(
-        //   tension: 0.0,
-        //   controlPoints,
-        //   startHandle: Offset(ll - 10, heightCenter),
-        //   endHandle: Offset(lr + 10, heightCenter),
-        // ).generateSamples().map((e) => e.value).toList(),
         List.generate(
           ((lr - ll) / ppp).ceil(),
           (index) {
