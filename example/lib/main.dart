@@ -27,10 +27,10 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             AmplitudeSquiggleSlider(),
             WavelengthSquiggleSlider(),
           ],

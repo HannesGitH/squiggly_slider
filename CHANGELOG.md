@@ -10,3 +10,8 @@
 
 * better docs
 * example
+
+## 1.0.2
+
+* added screenshot
+* removed sdk version constraint
