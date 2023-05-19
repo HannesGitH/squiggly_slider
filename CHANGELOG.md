@@ -15,3 +15,8 @@
 
 * added screenshot
 * removed sdk version constraint
+
+
+## 1.0.3
+
+* increased upper sdk version constraint to get more pub points ;)
