@@ -143,6 +143,12 @@ class _SquigglySliderState extends State<SquigglySlider>
   }
 
   @override
+  void dispose() {
+    phaseController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => SliderTheme(
         data: SliderTheme.of(context).copyWith(
           trackShape: SquigglySliderTrackShape(
