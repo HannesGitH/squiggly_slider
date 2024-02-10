@@ -20,3 +20,7 @@
 ## 1.0.3
 
 * increased upper sdk version constraint to get more pub points ;)
+
+## 1.0.4
+
+* dispose phase animation controller
