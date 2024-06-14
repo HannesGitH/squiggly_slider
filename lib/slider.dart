@@ -1,6 +1,7 @@
 library slider;
 
 import 'package:flutter/material.dart';
+import 'line_thumb_shape.dart';
 import 'squiggly_slider_track_shape.dart';
 
 /// A Material Design Squiggly [Slider].
@@ -100,6 +101,7 @@ class SquigglySlider extends Slider {
     this.squiggleAmplitude = 0.0,
     this.squiggleWavelength = 0.0,
     this.squiggleSpeed = 1.0,
+    this.useLineThumb = false,
   });
 
   /// The amplitude of the squiggle.
@@ -110,6 +112,9 @@ class SquigglySlider extends Slider {
 
   /// The speed of the squiggle in waves per second.
   final double squiggleSpeed;
+
+  /// Use the Android 13's like slider thumb
+  final bool useLineThumb;
 
   @override
   State<SquigglySlider> createState() => _SquigglySliderState();
@@ -158,6 +163,7 @@ class _SquigglySliderState extends State<SquigglySlider>
                 ? 1 - phaseController.value
                 : phaseController.value,
           ),
+          thumbShape: widget.useLineThumb ? const LineThumbShape() : null,
         ),
         child: Slider(
           key: widget.key,
