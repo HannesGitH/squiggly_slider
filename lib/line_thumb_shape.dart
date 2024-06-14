@@ -47,7 +47,7 @@ class LineThumbShape extends SliderComponentShape {
           width: thumbSize.width,
           height: thumbSize.height,
         ),
-        const Radius.circular(8),
+        Radius.circular(thumbSize.width),
       ),
       paint,
     );
