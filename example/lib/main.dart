@@ -33,6 +33,7 @@ class MyHomePage extends StatelessWidget {
           children: [
             AmplitudeSquiggleSlider(),
             WavelengthSquiggleSlider(),
+            LineThumbSquiggleSlider(),
           ],
         ),
       ),
@@ -100,6 +101,41 @@ class _WavelengthSquiggleSliderState extends State<WavelengthSquiggleSlider> {
           onChanged: (double value) {
             setState(() {
               _wavelength = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class LineThumbSquiggleSlider extends StatefulWidget {
+  const LineThumbSquiggleSlider({super.key});
+
+  @override
+  State<LineThumbSquiggleSlider> createState() =>
+      _LineThumbSquiggleSliderState();
+}
+
+class _LineThumbSquiggleSliderState extends State<LineThumbSquiggleSlider> {
+  double _value = 10;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('Line thumb'),
+        SquigglySlider(
+          useLineThumb: true,
+          value: _value,
+          min: 0,
+          max: 30,
+          squiggleAmplitude: 7,
+          squiggleWavelength: 10,
+          squiggleSpeed: 0.1,
+          label: 'Line thumb',
+          onChanged: (double value) {
+            setState(() {
+              _value = value;
             });
           },
         ),
