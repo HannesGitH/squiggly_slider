@@ -24,3 +24,7 @@
 ## 1.0.4
 
 * dispose phase animation controller
+
+## 1.0.5
+
+* added `useLineThumb` parameter to optionally closer align with A13s Media Control Slider Design (thanks [@GioPan04](https://github.com/GioPan04)
