@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A variant of the default circle thumb shape
 /// Similar to the one found in Android 13 Media control

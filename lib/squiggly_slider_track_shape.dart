@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A squiggly Variant of the default [Slider] track.
 /// Similar to that in the Android 13 Media Control.
@@ -115,7 +115,11 @@ class SquigglySliderTrackShape extends SliderTrackShape
         ? trackRect.bottom + (additionalActiveTrackHeight / 2)
         : trackRect.bottom;
 
-    if (squiggleAmplitude == 0) {
+    // A zero wavelength would make the sin(x / squiggleWavelength) below
+    // divide by zero, producing NaN offsets and an assertion in dart:ui. It is
+    // also the default, so `squiggleAmplitude` alone would otherwise crash.
+    // Treat either being unset as "no squiggle" and draw the plain track.
+    if (squiggleAmplitude == 0 || squiggleWavelength <= 0) {
       context.canvas.drawRRect(
         RRect.fromLTRBAndCorners(
           ll,

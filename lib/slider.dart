@@ -1,6 +1,4 @@
-library slider;
-
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'line_thumb_shape.dart';
 import 'squiggly_slider_track_shape.dart';
 
